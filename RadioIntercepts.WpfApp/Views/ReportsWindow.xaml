@@ -1,0 +1,9 @@
+﻿<Window x:Class="RadioIntercepts.WpfApp.Views.ReportsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Reports" Height="400" Width="400">
+    <StackPanel Margin="10" VerticalAlignment="Center" HorizontalAlignment="Center">
+        <Button Content="Export to Excel" Width="200" Click="ExportExcel_Click" Margin="0,0,0,10"/>
+        <Button Content="Export to CSV" Width="200" Click="ExportCsv_Click"/>
+    </StackPanel>
+</Window>

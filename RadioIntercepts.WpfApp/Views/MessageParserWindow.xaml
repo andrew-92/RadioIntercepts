@@ -1,0 +1,6 @@
+﻿<Window x:Class="RadioIntercepts.WpfApp.Views.MessageParserWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Message Parser" Height="600" Width="849">
+    <Button Content="Завантажити з Watsapp файлу" HorizontalAlignment="Left" Margin="21,10,0,0" VerticalAlignment="Top" Height="39" Width="184" Click="LoadFromWhatsappFile_Click"/>
+</Window>

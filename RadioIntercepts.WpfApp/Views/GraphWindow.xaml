@@ -1,0 +1,76 @@
+﻿<Window x:Class="RadioIntercepts.WpfApp.Views.GraphWindow"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:RadioIntercepts.WpfApp.Views"
+             xmlns:vm="clr-namespace:RadioIntercepts.WpfApp.ViewModels"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Фильтры -->
+        <Border Grid.Row="0" Padding="10" Background="#EEE">
+            <StackPanel>
+                <TextBlock Text="Фильтры для графа" FontWeight="Bold"/>
+                <StackPanel Orientation="Horizontal">
+                    <StackPanel Margin="0,0,20,0">
+                        <TextBlock Text="Период"/>
+                        <DatePicker SelectedDate="{Binding DateFrom}" Margin="0,5,0,0"/>
+                        <DatePicker SelectedDate="{Binding DateTo}" Margin="0,5,0,0"/>
+                    </StackPanel>
+                    <StackPanel Margin="0,0,20,0">
+                        <TextBlock Text="Area"/>
+                        <ComboBox ItemsSource="{Binding Areas}" SelectedItem="{Binding SelectedArea}" DisplayMemberPath="Name" Width="150"/>
+                    </StackPanel>
+                    <StackPanel Margin="0,0,20,0">
+                        <TextBlock Text="Frequency"/>
+                        <ComboBox ItemsSource="{Binding Frequencies}" SelectedItem="{Binding SelectedFrequency}" Width="150"/>
+                    </StackPanel>
+                    <StackPanel VerticalAlignment="Bottom">
+                        <Button Content="Построить граф" Command="{Binding BuildGraphCommand}" Margin="0,0,5,0"/>
+                        <Button Content="Сбросить" Command="{Binding ClearFiltersCommand}"/>
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <!-- Основное содержимое -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="300"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Граф (здесь можно использовать GraphX или другую библиотеку) -->
+            <Border Grid.Column="0" BorderBrush="LightGray" BorderThickness="1" Margin="5">
+                <TextBlock Text="Граф будет отображаться здесь" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+
+            <!-- Информация -->
+            <Border Grid.Column="1" BorderBrush="LightGray" BorderThickness="1" Margin="5">
+                <TabControl>
+                    <TabItem Header="Ключевые игроки">
+                        <ListBox ItemsSource="{Binding KeyPlayers}"/>
+                    </TabItem>
+                    <TabItem Header="Сообщества">
+                        <ListBox ItemsSource="{Binding Communities}">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Name}" FontWeight="Bold"/>
+                                        <TextBlock Text="{Binding Callsigns}" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </TabItem>
+                </TabControl>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>

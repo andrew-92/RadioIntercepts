@@ -1,0 +1,312 @@
+﻿<Window x:Class="RadioIntercepts.WpfApp.Views.CallsignAnalysisWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+        Title="Анализ позывного" Height="850" Width="1100">
+
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </Window.Resources>
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="2*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Заголовок -->
+        <TextBlock Grid.Row="0" Text="Анализ позывного" 
+                   FontSize="20" FontWeight="Bold" Margin="0,0,0,10"/>
+
+        <!-- Панель выбора и кнопки -->
+        <Border Grid.Row="1" BorderBrush="LightGray" BorderThickness="1" 
+                Padding="10" Margin="0,0,0,10">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Позывной:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                <ComboBox ItemsSource="{Binding Callsigns}" 
+                          SelectedItem="{Binding SelectedCallsign}"
+                          IsEditable="True"
+                          Width="200" Margin="0,0,10,0"/>
+                <Button Content="Анализировать" 
+                        Command="{Binding AnalyzeCommand}"
+                        Width="100" Margin="0,0,10,0"/>
+
+                <ProgressBar IsIndeterminate="True" Width="100"
+                             Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Панель анализа -->
+        <Border Grid.Row="2" BorderBrush="LightGray" BorderThickness="1" 
+                Padding="10" Margin="0,0,0,10"
+                Visibility="{Binding ShowAnalysisPanel, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Информация о позывном -->
+                <StackPanel Grid.Column="0" Margin="0,0,20,0">
+                    <TextBlock Text="{Binding SelectedCallsign}" 
+                               FontSize="24" FontWeight="Bold" Foreground="Blue"/>
+                    <TextBlock Text="{Binding TotalMessagesCount, StringFormat='Всего сообщений: {0}'}"
+                               Margin="0,10,0,0"/>
+                </StackPanel>
+
+                <!-- Первое сообщение -->
+                <Border Grid.Column="1" BorderBrush="LightGray" BorderThickness="1" 
+                        Padding="5" Margin="0,0,10,0"
+                        Visibility="{Binding ShowFirstMessage, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <StackPanel>
+                        <TextBlock Text="Первое упоминание:" FontWeight="Bold"/>
+                        <TextBlock Text="{Binding FirstMessage.DateTime, StringFormat='dd.MM.yyyy HH:mm:ss'}"/>
+                        <TextBlock Text="{Binding FirstMessage.Area.Name}" 
+                                   Margin="0,5,0,0"/>
+                        <TextBlock Text="{Binding FirstMessage.Dialog}" 
+                                   TextWrapping="Wrap" MaxHeight="50"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Последнее сообщение -->
+                <Border Grid.Column="3" BorderBrush="LightGray" BorderThickness="1" 
+                        Padding="5"
+                        Visibility="{Binding ShowLastMessage, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <StackPanel>
+                        <TextBlock Text="Последнее упоминание:" FontWeight="Bold"/>
+                        <TextBlock Text="{Binding LastMessage.DateTime, StringFormat='dd.MM.yyyy HH:mm:ss'}"/>
+                        <TextBlock Text="{Binding LastMessage.Area.Name}" 
+                                   Margin="0,5,0,0"/>
+                        <TextBlock Text="{Binding LastMessage.Dialog}" 
+                                   TextWrapping="Wrap" MaxHeight="50"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- Диаграмма по дням недели -->
+        <Border Grid.Row="3" BorderBrush="LightGray" BorderThickness="1" 
+                Padding="10" Margin="0,0,0,5"
+                Visibility="{Binding ShowDayChart, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Заголовок диаграммы -->
+                <TextBlock Grid.Row="0" Text="Активность по дням недели" 
+                           FontWeight="Bold" Margin="0,0,0,10"/>
+
+                <!-- Диаграмма -->
+                <lvc:CartesianChart Grid.Row="1"
+                                    Series="{Binding DayOfWeekChart.SeriesCollection}">
+                    <lvc:CartesianChart.AxisX>
+                        <lvc:Axis Labels="{Binding DayOfWeekChart.Labels}"/>
+                    </lvc:CartesianChart.AxisX>
+                    <lvc:CartesianChart.AxisY>
+                        <lvc:Axis Title="Количество сообщений"/>
+                    </lvc:CartesianChart.AxisY>
+                </lvc:CartesianChart>
+            </Grid>
+        </Border>
+
+        <!-- Диаграмма по часам -->
+        <Border Grid.Row="4" BorderBrush="LightGray" BorderThickness="1" Padding="10" Margin="0,0,0,5"
+                Visibility="{Binding ShowHourChart, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Заголовок диаграммы -->
+                <TextBlock Grid.Row="0" Text="Активность по часам суток" 
+                           FontWeight="Bold" Margin="0,0,0,10"/>
+
+                <!-- Диаграмма -->
+                <lvc:CartesianChart Grid.Row="1"
+                                    Series="{Binding HourChart.SeriesCollection}">
+                    <lvc:CartesianChart.AxisX>
+                        <lvc:Axis Labels="{Binding HourChart.Labels}"/>
+                    </lvc:CartesianChart.AxisX>
+                    <lvc:CartesianChart.AxisY>
+                        <lvc:Axis Title="Количество сообщений"/>
+                    </lvc:CartesianChart.AxisY>
+                </lvc:CartesianChart>
+            </Grid>
+        </Border>
+
+        <!-- Таблица: Сопутствующие позывные -->
+        <Border Grid.Row="5" BorderBrush="LightGray" BorderThickness="1" Padding="10"
+                Visibility="{Binding ShowAssociatedCallsigns, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Заголовок таблицы -->
+                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,10">
+                    <TextBlock Text="Сопутствующие позывные" 
+                               FontWeight="Bold" VerticalAlignment="Center"/>
+                    <TextBlock Text=" (встречались в одних сообщениях)"
+                               FontStyle="Italic" Foreground="Gray" 
+                               VerticalAlignment="Center" Margin="5,0,0,0"/>
+                </StackPanel>
+
+                <!-- Панель поиска -->
+                <Border Grid.Row="1" BorderBrush="LightGray" BorderThickness="0,1,0,0" 
+                        Padding="0,5,0,10" Margin="0,0,0,10">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0" Text="Поиск позывного:" 
+                                   VerticalAlignment="Center" Margin="0,0,10,0"/>
+
+                        <TextBox Grid.Column="1" 
+                                 Text="{Binding AssociatedCallsignsFilter, UpdateSourceTrigger=PropertyChanged}"
+                                 VerticalAlignment="Center"
+                                 Padding="5,2"
+                                 MinWidth="150"/>
+
+                        <TextBlock Grid.Column="2" 
+                                   VerticalAlignment="Center" Margin="15,0,0,0"
+                                   Foreground="Gray" FontSize="11">
+                            <Run Text="Показано:"/>
+                            <Run Text="{Binding FilteredAssociatedCallsignsCount}" FontWeight="SemiBold"/>
+                            <Run Text="из"/>
+                            <Run Text="{Binding TotalAssociatedCallsignsCount}" FontWeight="SemiBold"/>
+                        </TextBlock>
+                    </Grid>
+                </Border>
+
+                <!-- Таблица с данными -->
+                <DataGrid x:Name="AssociatedCallsignsDataGrid"
+                          Grid.Row="2" 
+                          ItemsSource="{Binding FilteredAssociatedCallsigns}"
+                          SelectedItem="{Binding SelectedAssociatedCallsign}"
+                          AutoGenerateColumns="False"
+                          IsReadOnly="True"
+                          CanUserAddRows="False"
+                          CanUserDeleteRows="False"
+                          CanUserReorderColumns="False"
+                          CanUserResizeRows="False"
+                          SelectionMode="Single"
+                          VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled"
+                          RowHeight="28"
+                          MouseDoubleClick="AssociatedCallsignsDataGrid_MouseDoubleClick">
+
+                    <!-- Стиль для TextBlock внутри ячеек DataGridCell -->
+                    <DataGrid.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="Cursor" Value="Hand"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="Padding" Value="10,0,10,0"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="DataGridCell">
+                                        <Border Background="{TemplateBinding Background}"
+                                                BorderBrush="{TemplateBinding BorderBrush}"
+                                                BorderThickness="{TemplateBinding BorderThickness}"
+                                                Padding="{TemplateBinding Padding}">
+                                            <ContentPresenter VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#FFF0F9FF"/>
+                                </Trigger>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="Background" Value="#FFE3F2FD"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGrid.CellStyle>
+
+                    <DataGrid.ColumnHeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="Background" Value="#FFF8FAFC"/>
+                            <Setter Property="BorderBrush" Value="#FFE2E8F0"/>
+                            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                            <Setter Property="Padding" Value="10,5"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                            <Setter Property="FontWeight" Value="SemiBold"/>
+                            <Setter Property="Foreground" Value="#FF475569"/>
+                        </Style>
+                    </DataGrid.ColumnHeaderStyle>
+
+                    <DataGrid.Columns>
+                        <!-- Колонка "Позывной" -->
+                        <DataGridTextColumn Header="Позывной" 
+                                            Binding="{Binding Callsign}"
+                                            SortMemberPath="Callsign"
+                                            Width="*">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Left"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="Padding" Value="5,0,0,0"/>
+                                    <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                                    <Setter Property="Foreground" Value="#FF1E40AF"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridCell}, Path=IsMouseOver}" Value="True">
+                                            <Setter Property="TextDecorations" Value="Underline"/>
+                                            <Setter Property="Foreground" Value="#FF1D4ED8"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridCell}, Path=IsSelected}" Value="True">
+                                            <Setter Property="Foreground" Value="Black"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+
+                        <!-- Колонка "Количество сообщений" -->
+                        <DataGridTextColumn Header="Количество сообщений" 
+                                            Binding="{Binding MessageCount}"
+                                            SortMemberPath="MessageCount"
+                                            Width="150">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="Padding" Value="0,0,15,0"/>
+                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                    <Setter Property="Foreground" Value="#FF059669"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridCell}, Path=IsSelected}" Value="True">
+                                            <Setter Property="Foreground" Value="Black"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+
+                <!-- Подсказка -->
+                <TextBlock Grid.Row="3" 
+                           Text="Двойной клик по позывному для просмотра сообщений" 
+                           HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                           FontStyle="Italic" Foreground="Gray" FontSize="10"
+                           Margin="0,5,5,0"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
