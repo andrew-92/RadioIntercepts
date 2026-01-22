@@ -1,5 +1,4 @@
-﻿using RadioIntercepts.Application.Parsers;
-using RadioIntercepts.Application.Parsers.Sources;
+﻿using RadioIntercepts.Core.Interfaces;
 
 public class MessageParserViewModel 
 {

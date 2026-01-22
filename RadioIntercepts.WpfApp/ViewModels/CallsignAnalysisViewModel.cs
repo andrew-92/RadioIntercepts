@@ -1,16 +1,18 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using LiveCharts;
 using Microsoft.EntityFrameworkCore;
+using RadioIntercepts.Analysis.Interfaces.Services;
 using RadioIntercepts.Application.Services;
 using RadioIntercepts.Core.Charts;
 using RadioIntercepts.Core.Models;
 using RadioIntercepts.Infrastructure.Data;
-using RadioIntercepts.WpfApp.Services;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using RadioIntercepts.WpfApp.Charts;
 
 namespace RadioIntercepts.WpfApp.ViewModels
 {
@@ -19,6 +21,19 @@ namespace RadioIntercepts.WpfApp.ViewModels
         private readonly AppDbContext _context;
         private readonly IChartService _chartService;
         private readonly Action<string, string> _openMessagesWindowAction;
+
+
+        [ObservableProperty]
+        private SeriesCollection _dayOfWeekSeries = new();
+
+        [ObservableProperty]
+        private string[] _dayOfWeekLabels = Array.Empty<string>();
+
+        [ObservableProperty]
+        private SeriesCollection _hourSeries = new();
+
+        [ObservableProperty]
+        private string[] _hourLabels = Array.Empty<string>();
 
         [ObservableProperty]
         private ObservableCollection<string> _callsigns = new();
@@ -169,6 +184,12 @@ namespace RadioIntercepts.WpfApp.ViewModels
                 {
                     DayOfWeekChart = await _chartService.GetCallsignActivityByDayOfWeekAsync(SelectedCallsign);
                     HourChart = await _chartService.GetCallsignActivityByHourAsync(SelectedCallsign);
+
+                    DayOfWeekSeries = ChartAdapter.ToColumnSeries(DayOfWeekChart);
+                    DayOfWeekLabels = ChartAdapter.ToLabels(DayOfWeekChart);
+
+                    HourSeries = ChartAdapter.ToColumnSeries(HourChart);
+                    HourLabels = ChartAdapter.ToLabels(HourChart);
 
                     ShowDayChart = DayOfWeekChart != null;
                     ShowHourChart = HourChart != null;

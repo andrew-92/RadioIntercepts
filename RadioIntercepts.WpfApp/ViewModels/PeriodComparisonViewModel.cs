@@ -3,15 +3,16 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.EntityFrameworkCore;
 using RadioIntercepts.Application.Services;
-using RadioIntercepts.Core.Models;
+using RadioIntercepts.Analysis.Interfaces.Services;
 using RadioIntercepts.Infrastructure.Data;
-using RadioIntercepts.WpfApp.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using RadioIntercepts.Analysis.Services.PeriodComparison;
+using RadioIntercepts.Core.Models.PeriodComparison;
 
 namespace RadioIntercepts.WpfApp.ViewModels
 {

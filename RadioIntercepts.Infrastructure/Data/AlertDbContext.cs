@@ -1,6 +1,6 @@
 ﻿// Infrastructure/Data/AlertDbContext.cs
 using Microsoft.EntityFrameworkCore;
-using RadioIntercepts.Core.Models;
+using RadioIntercepts.Core.Models.Alerts;
 
 namespace RadioIntercepts.Infrastructure.Data
 {

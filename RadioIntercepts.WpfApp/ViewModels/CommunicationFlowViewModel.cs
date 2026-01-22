@@ -3,9 +3,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.EntityFrameworkCore;
 using RadioIntercepts.Application.Services;
-using RadioIntercepts.Core.Models;
 using RadioIntercepts.Infrastructure.Data;
-using RadioIntercepts.WpfApp.Services;
+using RadioIntercepts.Analysis.Interfaces.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -13,6 +12,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using RadioIntercepts.Core.Models.Communication;
 
 namespace RadioIntercepts.WpfApp.ViewModels
 {

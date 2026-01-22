@@ -1,8 +1,8 @@
 ﻿using RadioIntercepts.Application.Services;
 using RadioIntercepts.Infrastructure.Data;
 using RadioIntercepts.WpfApp.ViewModels;
-using RadioIntercepts.WpfApp.Services;
 using System.Windows;
+using RadioIntercepts.Analysis.Interfaces.Services;
 
 namespace RadioIntercepts.WpfApp.Views
 {

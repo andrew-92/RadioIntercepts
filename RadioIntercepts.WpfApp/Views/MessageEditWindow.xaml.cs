@@ -1,4 +1,4 @@
-﻿using RadioIntercepts.Infrastructure.Repositories;
+﻿using RadioIntercepts.Core.Interfaces;
 using System;
 using System.Windows;
 

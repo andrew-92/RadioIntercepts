@@ -1,8 +1,9 @@
 ﻿// WpfApp/ViewModels/DialogPatternsViewModel.cs
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using RadioIntercepts.WpfApp.Services;
-using RadioIntercepts.Core.Models;
+using RadioIntercepts.Analysis.Interfaces.Services;
+using RadioIntercepts.Core.Interfaces;
+using RadioIntercepts.Core.Models.DialogPatterns;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

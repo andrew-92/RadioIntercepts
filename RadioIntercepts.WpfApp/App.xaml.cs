@@ -13,7 +13,7 @@ namespace RadioIntercepts.WpfApp
 
             //MessageBox.Show("OnStartup started"); // ← Проверка запуска
 
-            var serviceProvider = RadioIntercepts.WpfApp.Infrastructure.Startup.ConfigureServices();
+            var serviceProvider = WpfApp.Startup.ConfigureServices();
 
             //MessageBox.Show("DI configured"); // ← Проверка создания ServiceProvider
 

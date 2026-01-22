@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using RadioIntercepts.Core.Interfaces;
 using RadioIntercepts.Core.Models;
 using RadioIntercepts.Infrastructure.Data;
 using System.Collections.Generic;

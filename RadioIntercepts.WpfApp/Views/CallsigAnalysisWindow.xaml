@@ -106,9 +106,9 @@
 
                 <!-- Диаграмма -->
                 <lvc:CartesianChart Grid.Row="1"
-                                    Series="{Binding DayOfWeekChart.SeriesCollection}">
+                                    Series="{Binding DayOfWeekSeries}">
                     <lvc:CartesianChart.AxisX>
-                        <lvc:Axis Labels="{Binding DayOfWeekChart.Labels}"/>
+                        <lvc:Axis Labels="{Binding DayOfWeekLabels}"/>
                     </lvc:CartesianChart.AxisX>
                     <lvc:CartesianChart.AxisY>
                         <lvc:Axis Title="Количество сообщений"/>
@@ -132,9 +132,9 @@
 
                 <!-- Диаграмма -->
                 <lvc:CartesianChart Grid.Row="1"
-                                    Series="{Binding HourChart.SeriesCollection}">
+                                    Series="{Binding HourSeries}">
                     <lvc:CartesianChart.AxisX>
-                        <lvc:Axis Labels="{Binding HourChart.Labels}"/>
+                        <lvc:Axis Labels="{Binding HourLabels}"/>
                     </lvc:CartesianChart.AxisX>
                     <lvc:CartesianChart.AxisY>
                         <lvc:Axis Title="Количество сообщений"/>

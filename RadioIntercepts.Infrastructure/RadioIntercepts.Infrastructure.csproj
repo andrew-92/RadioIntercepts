@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Applecation\RadioIntercepts.Application.csproj" />
+    <ProjectReference Include="..\RadioIntercepts.Application\RadioIntercepts.Application.csproj" />
     <ProjectReference Include="..\RadioIntercepts.Core\RadioIntercepts.Core.csproj" />
   </ItemGroup>
 

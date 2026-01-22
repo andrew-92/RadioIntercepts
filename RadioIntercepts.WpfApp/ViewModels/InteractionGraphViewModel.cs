@@ -2,8 +2,8 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.EntityFrameworkCore;
-using RadioIntercepts.WpfApp.Services;
 using RadioIntercepts.Core.Models;
+using RadioIntercepts.Analysis.Interfaces.Services;
 using RadioIntercepts.Infrastructure.Data;
 using System;
 using System.Collections.Generic;
@@ -11,6 +11,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using RadioIntercepts.Analysis.Services.Graphs;
 
 namespace RadioIntercepts.WpfApp.ViewModels
 {

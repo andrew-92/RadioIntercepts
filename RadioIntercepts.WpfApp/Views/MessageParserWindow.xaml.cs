@@ -1,10 +1,10 @@
 ﻿using Microsoft.Win32;
 using RadioIntercepts.Application.Parsers;
-using RadioIntercepts.Application.Parsers.Sources;
-using RadioIntercepts.Application.Services;
-using RadioIntercepts.Infrastructure.Repositories;
+using RadioIntercepts.Application.Parsers.Source;
 using System.Windows;
 using System.Threading.Tasks;
+using RadioIntercepts.Analysis.Interfaces.Services;
+using RadioIntercepts.Core.Interfaces;
 
 namespace RadioIntercepts.WpfApp.Views
 {

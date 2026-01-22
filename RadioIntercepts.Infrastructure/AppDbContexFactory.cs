@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using RadioIntercepts.Infrastructure.Data;
 
-namespace RadioIntercepts.Infrastructure.Data
+namespace RadioIntercepts.Infrastructure
 {
     public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
     {

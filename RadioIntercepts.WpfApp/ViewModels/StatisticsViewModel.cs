@@ -1,17 +1,16 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.EntityFrameworkCore;
-using RadioIntercepts.Application.Services;
+using RadioIntercepts.Analysis.Interfaces.Services;
 using RadioIntercepts.Core.Charts;
 using RadioIntercepts.Core.Models;
 using RadioIntercepts.Infrastructure.Data;
 using System;
 using System.Collections.ObjectModel;
-using RadioIntercepts.WpfApp.Services;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace RadioIntercepts.WpfApp.ViewModels
 {
@@ -62,7 +61,6 @@ namespace RadioIntercepts.WpfApp.ViewModels
             _context = context;
             _chartService = chartService;
 
-            // Устанавливаем дефолтные даты (последние 30 дней)
             DateTo = DateTime.Today;
             DateFrom = DateTime.Today.AddDays(-30);
 
@@ -79,7 +77,6 @@ namespace RadioIntercepts.WpfApp.ViewModels
         {
             try
             {
-                // Загружаем Areas
                 var areasList = await _context.Areas
                     .AsNoTracking()
                     .OrderBy(a => a.Name)
@@ -87,11 +84,8 @@ namespace RadioIntercepts.WpfApp.ViewModels
 
                 Areas.Clear();
                 foreach (var area in areasList)
-                {
                     Areas.Add(area);
-                }
 
-                // Загружаем Frequencies
                 var frequenciesList = await _context.Frequencies
                     .AsNoTracking()
                     .OrderBy(f => f.Value)
@@ -100,14 +94,15 @@ namespace RadioIntercepts.WpfApp.ViewModels
 
                 Frequencies.Clear();
                 foreach (var freq in frequenciesList)
-                {
                     Frequencies.Add(freq);
-                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка загрузки фильтров: {ex.Message}",
-                    "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(
+                    $"Ошибка загрузки фильтров: {ex.Message}",
+                    "Ошибка",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
             }
         }
 
@@ -134,21 +129,31 @@ namespace RadioIntercepts.WpfApp.ViewModels
             IsLoading = true;
             try
             {
-                // Загружаем общее количество сообщений
                 TotalMessagesCount = await _chartService.GetTotalMessagesCountAsync(
-                    DateFrom, DateTo, SelectedArea, SelectedFrequency);
+                    DateFrom,
+                    DateTo,
+                    SelectedArea,
+                    SelectedFrequency);
 
-                // Загружаем данные для диаграмм
                 DayOfWeekChart = await _chartService.GetActivityByDayOfWeekAsync(
-                    DateFrom, DateTo, SelectedArea, SelectedFrequency);
+                    DateFrom,
+                    DateTo,
+                    SelectedArea,
+                    SelectedFrequency);
 
                 HourChart = await _chartService.GetActivityByHourAsync(
-                    DateFrom, DateTo, SelectedArea, SelectedFrequency);
+                    DateFrom,
+                    DateTo,
+                    SelectedArea,
+                    SelectedFrequency);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка загрузки статистики: {ex.Message}",
-                    "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(
+                    $"Ошибка загрузки статистики: {ex.Message}",
+                    "Ошибка",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
             }
             finally
             {
@@ -158,7 +163,7 @@ namespace RadioIntercepts.WpfApp.ViewModels
 
         private void UpdateFiltersText()
         {
-            var filters = new System.Text.StringBuilder();
+            var filters = new StringBuilder();
 
             if (DateFrom.HasValue || DateTo.HasValue)
             {
@@ -177,18 +182,15 @@ namespace RadioIntercepts.WpfApp.ViewModels
             if (!string.IsNullOrEmpty(SelectedFrequency))
                 filters.Append($"Frequency: {SelectedFrequency}; ");
 
-            if (filters.Length == 0)
-                filters.Append("Фильтры не применены");
-
-            FiltersText = filters.ToString().TrimEnd(';', ' ');
+            FiltersText = filters.Length > 0
+                ? filters.ToString().TrimEnd(' ', ';')
+                : "Фильтры не применены";
         }
 
-        // Автоматически обновляем статистику при изменении фильтров
         protected override void OnPropertyChanged(System.ComponentModel.PropertyChangedEventArgs e)
         {
             base.OnPropertyChanged(e);
 
-            // Авто-обновление при изменении фильтров (опционально)
             if (e.PropertyName == nameof(DateFrom) ||
                 e.PropertyName == nameof(DateTo) ||
                 e.PropertyName == nameof(SelectedArea) ||

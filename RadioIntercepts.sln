@@ -11,7 +11,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RadioIntercepts.WpfApp", "R
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RadioIntercepts.Tests", "RadioIntercepts.Tests\RadioIntercepts.Tests.csproj", "{04F6CA1B-3C0B-4B91-A720-F1718C3D53C5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RadioIntercepts.Application", "Applecation\RadioIntercepts.Application.csproj", "{32299BD8-2997-4B27-B07C-31CBD5CFB44E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RadioIntercepts.Application", "RadioIntercepts.Application\RadioIntercepts.Application.csproj", "{32299BD8-2997-4B27-B07C-31CBD5CFB44E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RadioIntercepts.Analysis", "RadioIntercepts.Analysis\RadioIntercepts.Analysis.csproj", "{19A7431E-1D2C-4AA1-B379-48E276AB9AF9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{32299BD8-2997-4B27-B07C-31CBD5CFB44E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{32299BD8-2997-4B27-B07C-31CBD5CFB44E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{32299BD8-2997-4B27-B07C-31CBD5CFB44E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19A7431E-1D2C-4AA1-B379-48E276AB9AF9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19A7431E-1D2C-4AA1-B379-48E276AB9AF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19A7431E-1D2C-4AA1-B379-48E276AB9AF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19A7431E-1D2C-4AA1-B379-48E276AB9AF9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
