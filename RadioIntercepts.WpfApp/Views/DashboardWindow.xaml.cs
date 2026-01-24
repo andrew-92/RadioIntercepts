@@ -62,5 +62,21 @@ namespace RadioIntercepts.WpfApp.Views
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+        private void CallsignGraphButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                using var scope = _serviceProvider.CreateScope();
+                var newWindow = scope.ServiceProvider.GetRequiredService<GraphWindow>();
+                newWindow.Owner = this;
+                newWindow.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка: {ex.Message}", "Ошибка",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
     }
 }

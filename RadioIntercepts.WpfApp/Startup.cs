@@ -57,7 +57,19 @@ namespace RadioIntercepts.WpfApp
             services.AddTransient<CallsignAnalysisViewModel>();
             services.AddTransient<StatisticsWindow>();
             services.AddTransient<StatisticsViewModel>();
-           // services.AddScoped<ICommunicationFlowService, CommunicationFlowService>();
+
+            services.AddScoped<IGraphAnalysisService, GraphAnalysisService>();
+            services.AddScoped<IAdvancedGraphAnalysisService, AdvancedGraphAnalysisService>();
+            services.AddScoped<ICacheService, MemoryCacheService>(); // Реализуйте кэш
+
+            services.AddSingleton<ICacheService, AdvancedMemoryCacheService>();
+            services.AddScoped<IGraphAnalysisService, GraphAnalysisService>();
+            services.AddScoped<IAdvancedGraphAnalysisService, AdvancedGraphAnalysisService>();
+            services.AddScoped<GraphViewModel>();
+            services.AddTransient<GraphWindow>();
+
+
+            // services.AddScoped<ICommunicationFlowService, CommunicationFlowService>();
             //services.AddScoped<IAlertService, AlertService>();
             services.AddScoped<ICodeAnalysisService, CodeAnalysisService>();
             //services.AddScoped<ISemanticSearchService, SemanticSearchService>();

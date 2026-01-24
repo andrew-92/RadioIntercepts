@@ -1,76 +1,385 @@
 ﻿<Window x:Class="RadioIntercepts.WpfApp.Views.GraphWindow"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:RadioIntercepts.WpfApp.Views"
-             xmlns:vm="clr-namespace:RadioIntercepts.WpfApp.ViewModels"
-             mc:Ignorable="d" 
-             d:DesignHeight="600" d:DesignWidth="800">
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Анализ сетей взаимодействий" 
+        Height="800" Width="1200"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="SingleBorderWindow"
+        ResizeMode="CanResize">
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- Фильтры -->
-        <Border Grid.Row="0" Padding="10" Background="#EEE">
-            <StackPanel>
-                <TextBlock Text="Фильтры для графа" FontWeight="Bold"/>
-                <StackPanel Orientation="Horizontal">
-                    <StackPanel Margin="0,0,20,0">
-                        <TextBlock Text="Период"/>
-                        <DatePicker SelectedDate="{Binding DateFrom}" Margin="0,5,0,0"/>
-                        <DatePicker SelectedDate="{Binding DateTo}" Margin="0,5,0,0"/>
-                    </StackPanel>
-                    <StackPanel Margin="0,0,20,0">
-                        <TextBlock Text="Area"/>
-                        <ComboBox ItemsSource="{Binding Areas}" SelectedItem="{Binding SelectedArea}" DisplayMemberPath="Name" Width="150"/>
-                    </StackPanel>
-                    <StackPanel Margin="0,0,20,0">
-                        <TextBlock Text="Frequency"/>
-                        <ComboBox ItemsSource="{Binding Frequencies}" SelectedItem="{Binding SelectedFrequency}" Width="150"/>
-                    </StackPanel>
-                    <StackPanel VerticalAlignment="Bottom">
-                        <Button Content="Построить граф" Command="{Binding BuildGraphCommand}" Margin="0,0,5,0"/>
-                        <Button Content="Сбросить" Command="{Binding ClearFiltersCommand}"/>
-                    </StackPanel>
+        <!-- Панель инструментов -->
+        <Border Grid.Row="0" 
+                Background="#FF2196F3"
+                Padding="16,8">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Фильтры -->
+                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                    <Border Background="#FFF5F5F5" CornerRadius="4" Padding="8">
+                        <StackPanel>
+                            <TextBlock Text="Период" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                            <StackPanel Orientation="Horizontal">
+                                <StackPanel Margin="0,0,8,0">
+                                    <TextBlock Text="С:" FontSize="10"/>
+                                    <DatePicker SelectedDate="{Binding DateFrom}" Width="120"/>
+                                </StackPanel>
+                                <StackPanel>
+                                    <TextBlock Text="По:" FontSize="10"/>
+                                    <DatePicker SelectedDate="{Binding DateTo}" Width="120"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Background="#FFF5F5F5" CornerRadius="4" Padding="8" Margin="8,0,0,0">
+                        <StackPanel>
+                            <TextBlock Text="Область" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                            <ComboBox ItemsSource="{Binding Areas}" 
+                                      SelectedItem="{Binding SelectedArea}"
+                                      DisplayMemberPath="Name"
+                                      Width="180"
+                                      IsEditable="True"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Background="#FFF5F5F5" CornerRadius="4" Padding="8" Margin="8,0,0,0">
+                        <StackPanel>
+                            <TextBlock Text="Частота" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                            <ComboBox ItemsSource="{Binding Frequencies}" 
+                                      SelectedItem="{Binding SelectedFrequency}"
+                                      Width="120"
+                                      IsEditable="True"/>
+                        </StackPanel>
+                    </Border>
                 </StackPanel>
-            </StackPanel>
+
+                <!-- Кнопки действий -->
+                <StackPanel Grid.Column="2" Orientation="Horizontal">
+                    <Button Content="Построить граф" 
+                            Command="{Binding BuildGraphCommand}"
+                            Width="120"
+                            Height="30"
+                            Background="#FF4CAF50"
+                            Foreground="White"
+                            BorderThickness="0">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsLoading}" Value="True">
+                                        <Setter Property="Content">
+                                            <Setter.Value>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <ProgressBar IsIndeterminate="True" 
+                                                               Width="16" 
+                                                               Height="16"
+                                                               Margin="0,0,8,0"/>
+                                                    <TextBlock Text="Загрузка..."/>
+                                                </StackPanel>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+
+                    <Button Content="Обновить" 
+                            Command="{Binding RefreshAnalysisCommand}"
+                            Width="80"
+                            Height="30"
+                            Margin="5"/>
+
+                    <Button Content="Сбросить" 
+                            Command="{Binding ClearFiltersCommand}"
+                            Width="80"
+                            Height="30"
+                            Margin="5"/>
+
+                    <Button Content="Экспорт" 
+                            Command="{Binding ExportGraphDataCommand}"
+                            Width="80"
+                            Height="30"
+                            Margin="5"/>
+                </StackPanel>
+            </Grid>
         </Border>
 
-        <!-- Основное содержимое -->
+        <!-- Основной контент -->
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="300"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="350"/>
             </Grid.ColumnDefinitions>
 
-            <!-- Граф (здесь можно использовать GraphX или другую библиотеку) -->
-            <Border Grid.Column="0" BorderBrush="LightGray" BorderThickness="1" Margin="5">
-                <TextBlock Text="Граф будет отображаться здесь" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <!-- Левая панель - Метаданные -->
+            <ScrollViewer Grid.Column="0" 
+                          VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="8">
+
+                    <!-- Метрики сети -->
+                    <Border Background="#FFF5F5F5" CornerRadius="4" Padding="12" Margin="0,0,0,8">
+                        <StackPanel>
+                            <TextBlock Text="Метрики сети" 
+                                       FontWeight="Bold" 
+                                       FontSize="14"
+                                       Margin="0,0,0,8"/>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="{Binding TotalNodes, StringFormat='Узлы: {0}'}"/>
+                                    <TextBlock Text="{Binding TotalEdges, StringFormat='Связи: {0}'}"/>
+                                    <TextBlock Text="{Binding NetworkMetrics.AverageDegree, StringFormat='Сред. степень: {0:F1}'}"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="1">
+                                    <TextBlock Text="{Binding NetworkMetrics.Density, StringFormat='Плотность: {0:F3}'}"/>
+                                    <TextBlock Text="{Binding NetworkMetrics.ClusteringCoefficient, StringFormat='Кластеризация: {0:F2}'}"/>
+                                    <TextBlock Text="{Binding NetworkMetrics.Modularity, StringFormat='Модулярность: {0:F2}'}"/>
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Мосты -->
+                    <Border Background="#FFF5F5F5" CornerRadius="4" Padding="12" Margin="0,0,0,8">
+                        <StackPanel>
+                            <TextBlock Text="Мосты сети" 
+                                       FontWeight="Bold" 
+                                       FontSize="14"
+                                       Margin="0,0,0,8"/>
+
+                            <ItemsControl ItemsSource="{Binding Bridges}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Background="#FFFFFFFF" 
+                                                CornerRadius="2" 
+                                                Padding="4" 
+                                                Margin="0,1">
+                                            <TextBlock Text="{Binding}" 
+                                                       FontWeight="SemiBold"/>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Статус -->
+                    <Border Background="#FFF5F5F5" CornerRadius="4" Padding="12">
+                        <TextBlock Text="{Binding StatusMessage}" 
+                                   TextWrapping="Wrap"
+                                   FontSize="11"/>
+                    </Border>
+
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- Центральная панель - Информация о графе -->
+            <Border Grid.Column="1" 
+                    Margin="8"
+                    Background="White"
+                    BorderBrush="#FFE0E0E0"
+                    BorderThickness="1"
+                    CornerRadius="4">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Заголовок графа -->
+                    <Border Grid.Row="0" 
+                            Background="#FFF5F5F5"
+                            Padding="12"
+                            CornerRadius="4,4,0,0">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Анализ графа взаимодействий" 
+                                       FontWeight="Bold" 
+                                       FontSize="16"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Информация о графе -->
+                    <ScrollViewer Grid.Row="1" Padding="12">
+                        <StackPanel>
+                            <TextBlock Text="{Binding TotalNodes, StringFormat='Всего узлов: {0}'}" 
+                                       FontWeight="SemiBold"/>
+                            <TextBlock Text="{Binding TotalEdges, StringFormat='Всего связей: {0}'}" 
+                                       FontWeight="SemiBold"
+                                       Margin="0,4,0,0"/>
+
+                            <TextBlock Text="Список узлов:" 
+                                       FontWeight="Bold"
+                                       Margin="0,12,0,4"/>
+
+                            <DataGrid ItemsSource="{Binding DisplayNodes}" 
+          AutoGenerateColumns="False"
+          Height="300"
+          IsReadOnly="True">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Позывной" 
+                            Binding="{Binding Callsign}" Width="100"/>
+                                    <DataGridTextColumn Header="Сообщений" 
+                            Binding="{Binding TotalMessages}" Width="80"/>
+                                    <DataGridTextColumn Header="Центральность" 
+                            Binding="{Binding Centrality, StringFormat={}{0:F2}}" Width="80"/>
+                                    <DataGridTextColumn Header="Сообщество" 
+                            Binding="{Binding CommunityId}" Width="80"/>
+                                    <DataGridTextColumn Header="Степень" 
+                            Binding="{Binding Degree}" Width="60"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
             </Border>
 
-            <!-- Информация -->
-            <Border Grid.Column="1" BorderBrush="LightGray" BorderThickness="1" Margin="5">
-                <TabControl>
-                    <TabItem Header="Ключевые игроки">
-                        <ListBox ItemsSource="{Binding KeyPlayers}"/>
-                    </TabItem>
-                    <TabItem Header="Сообщества">
-                        <ListBox ItemsSource="{Binding Communities}">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel>
-                                        <TextBlock Text="{Binding Name}" FontWeight="Bold"/>
-                                        <TextBlock Text="{Binding Callsigns}" TextWrapping="Wrap"/>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                    </TabItem>
-                </TabControl>
-            </Border>
+            <!-- Правая панель - Аналитика -->
+            <Grid Grid.Column="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Ключевые игроки -->
+                <Border Grid.Row="0" 
+                        Margin="8,8,8,4"
+                        Background="White"
+                        BorderBrush="#FFE0E0E0"
+                        BorderThickness="1"
+                        CornerRadius="4">
+                    <DockPanel>
+                        <Border DockPanel.Dock="Top" 
+                                Background="#FFF5F5F5"
+                                Padding="12"
+                                CornerRadius="4,4,0,0">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Ключевые игроки" 
+                                           FontWeight="Bold" 
+                                           FontSize="14"/>
+                            </StackPanel>
+                        </Border>
+
+                        <ScrollViewer Padding="8">
+                            <ItemsControl ItemsSource="{Binding KeyPlayers}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Background="#FFF5F5F5" 
+                                                CornerRadius="4"
+                                                Padding="12"
+                                                Margin="0,4,0,0">
+                                            <StackPanel>
+                                                <TextBlock Text="{Binding Callsign}" 
+                                                           FontWeight="Bold" 
+                                                           FontSize="14"
+                                                           Foreground="#FF2196F3"/>
+
+                                                <Grid Margin="0,8,0,0">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <StackPanel Grid.Column="0">
+                                                        <TextBlock Text="{Binding TotalMessages, StringFormat='Сообщений: {0}'}"/>
+                                                        <TextBlock Text="{Binding Degree, StringFormat='Связей: {0}'}"/>
+                                                        <TextBlock Text="{Binding CommunityId, StringFormat='Сообщество: {0}'}"/>
+                                                    </StackPanel>
+
+                                                    <StackPanel Grid.Column="1">
+                                                        <TextBlock Text="{Binding Centrality, StringFormat='Центральность: {0:F2}'}" 
+                                                                   FontWeight="SemiBold"/>
+                                                        <ProgressBar Value="{Binding Centrality}" 
+                                                                    Maximum="1" 
+                                                                    Height="6" 
+                                                                    Margin="0,2,0,0"/>
+                                                    </StackPanel>
+                                                </Grid>
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </DockPanel>
+                </Border>
+
+                <!-- Сообщества -->
+                <Border Grid.Row="1" 
+                        Margin="8,4,8,8"
+                        Background="White"
+                        BorderBrush="#FFE0E0E0"
+                        BorderThickness="1"
+                        CornerRadius="4">
+                    <DockPanel>
+                        <Border DockPanel.Dock="Top" 
+                                Background="#FFF5F5F5"
+                                Padding="12"
+                                CornerRadius="4,4,0,0">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Сообщества" 
+                                           FontWeight="Bold" 
+                                           FontSize="14"/>
+                            </StackPanel>
+                        </Border>
+
+                        <ScrollViewer Padding="8">
+                            <ItemsControl ItemsSource="{Binding Communities}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Background="#FFF5F5F5" 
+                                                CornerRadius="4"
+                                                Padding="12"
+                                                Margin="0,4,0,0">
+                                            <StackPanel>
+                                                <TextBlock Text="{Binding Size, StringFormat='Сообщество ({0} узлов)'}" 
+                                                           FontWeight="Bold"/>
+
+                                                <TextBlock Text="Ключевые узлы:" 
+                                                           Margin="0,8,0,0"/>
+
+                                                <ItemsControl ItemsSource="{Binding KeyPlayers}" 
+                                                              Margin="0,4,0,0">
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <Border Background="#FFFFFFFF" 
+                                                                    CornerRadius="2" 
+                                                                    Padding="4,2" 
+                                                                    Margin="0,1">
+                                                                <TextBlock Text="{Binding}"/>
+                                                            </Border>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </DockPanel>
+                </Border>
+            </Grid>
         </Grid>
     </Grid>
 </Window>

@@ -1,4 +1,8 @@
-﻿using System;
+﻿using DocumentFormat.OpenXml.InkML;
+using RadioIntercepts.Analysis.Interfaces.Services;
+using RadioIntercepts.Infrastructure.Data;
+using RadioIntercepts.WpfApp.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,9 +23,10 @@ namespace RadioIntercepts.WpfApp.Views
     /// </summary>
     public partial class GraphWindow : Window
     {
-        public GraphWindow()
+        public GraphWindow(IAdvancedGraphAnalysisService service, AppDbContext context)
         {
             InitializeComponent();
+            DataContext = new GraphViewModel(service, context);
         }
     }
 }
